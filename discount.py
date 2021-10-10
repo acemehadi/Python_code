@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections import namedtuple
 
-Customer = namedtuple('Customer', 'nmae fidelity')
+Customer = namedtuple('Customer', 'name fidelity')
 
 
 class LineItem:
@@ -15,7 +15,7 @@ class LineItem:
         self.price * self.quantity
 
 
-class Oder:
+class Order:
     def __init__(self, customer, cart, promotion=None):
         self.customer = customer
         self.cart = list(cart)
@@ -35,7 +35,7 @@ class Oder:
 
     def __repr__(self):
         fmt = '<Order total: {:.2f} due: {:2f}>'
-        return fmt.format(self.total(), self.sue())
+        return fmt.format(self.total(), self.due())
 
 
 class Promotion(ABC):
@@ -52,7 +52,7 @@ class FidelityPromo(Promotion):
         return order.total() * .05 if order.customer.fidelity >= 1000 else 0
 
 
-class BuljItemPromo(Promotion):
+class BulkItemPromo(Promotion):
     """10% discount for each LineItem with 20 or more units"""
 
     def discount(self, order):
@@ -71,3 +71,11 @@ class LargeOrderPromo(Promotion):
         if len(distinct_items) >= 10:
             return order.total() * .07
         return 0
+
+
+joe = Customer('John Doe', 0)
+ann = Customer('Ann Smith', 1100)
+cart = [LineItem('banana', 30, .5),
+        LineItem('apple', 10, 1.5),
+        LineItem('watermellon', 5, 5.0)]
+Order(joe, cart, FidelityPromo())
